@@ -231,7 +231,7 @@ textarea.journal-field:focus{border-color:rgba(191,91,67,.35);box-shadow:0 0 0 3
 .water-btn:hover{background:var(--surface-2)}
 .encouragement{margin-top:.8rem;background:var(--surface-2);border-radius:var(--r-md);padding:.8rem .9rem;font-size:13px;line-height:1.55;color:var(--text-muted);min-height:52px}
 .garden-message{margin-top:1rem;background:linear-gradient(135deg,rgba(191,91,67,.08),rgba(79,186,150,.08));border:1px solid rgba(191,91,67,.15);border-radius:var(--r-md);padding:.95rem 1rem;font-size:13px;line-height:1.65;color:var(--text)}
-.site-header {
+.brand {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -239,10 +239,12 @@ textarea.journal-field:focus{border-color:rgba(191,91,67,.35);box-shadow:0 0 0 3
 }
 
 .site-logo {
-  width: 48px;
-  height: 48px;
+  width: 42px;
+  height: 42px;
   object-fit: contain;
+  display: block;
 }
+
 
 @keyframes glow{50%{transform:translateX(-50%) scale(1.1);opacity:.75}}
 @keyframes floaty{50%{transform:translateX(-50%) translateY(-4px)}}
