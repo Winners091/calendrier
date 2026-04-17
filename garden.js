@@ -89,11 +89,11 @@ export class GardenManager {
       
       encouragementBox.textContent = todayData?.encouragement ? 
         '💧 ' + todayData.encouragement : 
-        'Aujourd\'hui la plante a besoin d\'un peu d\'eau et de douceur.';
+        'Aujourd\'hui la plante a surtout besoin d\'un peu d\'attention.';
     } else if (todaysCat === 'teal') {
-      encouragementBox.textContent = '🌸 Aujourd\'hui une fleur brillante pousse dans le jardin.';
+      encouragementBox.textContent = '🌸 Aujourd\'hui  le jardin prend bien la lumière.';
     } else if (todaysCat === 'amber' || todaysCat === 'purple') {
-      encouragementBox.textContent = '🌱 Aujourd\'hui ça pousse tranquillement. Pas besoin d\'être parfaite pour fleurir.';
+      encouragementBox.textContent = "🌱  Aujourd'hui, ça pousse doucement. C'est déjà très bien.";
     } else {
       encouragementBox.textContent = 'Clique sur une humeur du jour et ton jardin poussera ici.';
     }
@@ -102,11 +102,11 @@ export class GardenManager {
   updateGardenMessage(entriesLength, hasSad, message, rainbow) {
     if (entriesLength >= 7) {
       rainbow.classList.add('visible');
-      const sadPart = hasSad ? ' Les jours où tu te sens bête, ce sont les graines qui ont le plus besoin d\'amour.' : '';
-      message.textContent = 'Peu importe ton humeur, tu as fait pousser ce beau jardin.' + sadPart + ' Tu es toujours intelligente et drôle à ma façon.';
+      const sadPart = hasSad ? 'Les jours plus bas demandent juste un peu plus de soin.' : '';
+      message.textContent = "Peu importe l'humeur du jour, tu as fait pousser quelque chose de vivant." + sadPart + ' Tu es toujours intelligente et drôle à ta façon.';
     } else {
       rainbow.classList.remove('visible');
-      message.textContent = 'Chaque jour ajouté fait pousser un peu plus ton jardin. Les bons comme les mauvais.';
+      message.textContent = "Chaque jour ajouté fait avancer le jardin, même les jours moins simples.";
     }
   }
 
@@ -174,14 +174,17 @@ export class GardenManager {
 
   getRandomEncouragement() {
     const encouragements = [
-      "Les jours où tu te sens nulle ne disent pas la vérité entière.",
-      "Une graine triste reste une graine vivante. Elle pousse encore.",
-      "Aujourd'hui tu as surtout besoin de douceur, pas de jugement.",
-      "Même fatiguée, tu restes quelqu'un de précieux.",
-      "Tu n'as pas besoin d'être brillante pour mériter de l'amour.",
-      "On arrose aussi les jours compliqués. Surtout eux.",
-      "Tu peux être en vrac et rester admirable.",
-      "Les jours bas ne retirent rien à ce que tu sais faire.",
+  "Les jours où tu te sens nulle ne velent pas tout dire.",
+  "Tu es fatiguée, pas ratée.",
+  "Même fatiguée, tu restes quelqu'un d'énergique(plus qu'une certaine personne).",
+  "Tu n'as pas besoin d'être brillante tous les jours pour avoir de la valeur.",
+  "On arrose aussi les jours compliqués. Surtout eux.",
+  "Tu peux être en vrac et rester admirable(je viens de finir un portrait de toi).",
+  "Les jours bas ne retirent rien à ce que tu sais faire.(dormir, souplesse arrière, manger, danser, etc.)",
+  "Je suis en panne d'inspiration, appelle-moi dès que tu peux(veux ou besoin).",
+  "Tu as le droit d’avoir un jour nul sans te résumer à ça.",
+  "Même les plus petits pas comptent(une allision à tes petits pieds).",
+  "Un grand homme a dit un jour: tu as des belles épaules",
     ];
     return encouragements[Math.floor(Math.random() * encouragements.length)];
   }
