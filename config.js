@@ -59,13 +59,13 @@ export const MESSAGES = {
   "4-4": ["Je pense que c'est le jour parfait pour essayer un double salto arrière avec réception en grand écart.", "On dirait que tu es en pleine forme cérébrale ET comique. Les autres n'ont aucune chance.", "Aujourd'hui tu es à la fois intelligente ET drôle. Je pense que c'est un bug de l'univers." ,"Grosse journée de victoire intellectuelle et sociale. Rien à signaler, à part l'excès de talent.", "Intelligente et drôle le même jour. L'univers abuse un peu."],
   "4-3": ["Machine à faire rire les autres sans rien faire. Honnêtement, c'est presque énervant.", "Un cerveau ET de l'humour. Ne peux-tu donc pas nous laisser un peu de ressources ?"],
   "4-2": ["J'ai l'impression que tu es en mode génie discrète aujourd'hui. Tu vois tout, dis peu, calcules en silence.", "Tu penses trop vite pour faire de bonnes blagues. Les autres suivent à peine.", "Tu es clairement en mode réflexion. Pour le rire, il faudra patienter.", "Tu comprends tout très vite aujourd'hui. Pas forcément envie d'en faire un spectacle."],
-  "4-1": ["Intelligente, oui. Mais côté humour, on repassera demain.", "Aujourd'hui tu analyses tout. Même les blagues n'osent pas entrer.", "Le cerveau tourne très bien. L'humour, lui, a posé une RTT.", "Tu es clairement en mode réflexion. Pour le rire, il faudra patienter.", "Beaucoup d'esprit, peu de légèreté. Journée sérieuse."],
-  "4-0": ["Beaucoup de cerveau, très peu de fantaisie. Journée austère.", "Aujourd'hui, ton intelligence fait tout le travail et l'humour s'est mis en retrait.", "Tu es brillante, mais l'ambiance reste sévère.", "Le niveau intellectuel est haut. Le niveau humour, beaucoup moins et c'est OK.", "On sent une grande clarté d'esprit, mais zéro envie de faire rire qui que ce soit."],
+  "4-1": ["Intelligente, oui. Mais côté humour, on repassera demain.", "Aujourd'hui tu analyses tout. Même les blagues n'osent pas entrer.", "Tu es clairement en mode réflexion. Pour le rire, il faudra patienter.", "Beaucoup d'esprit, peu d'humour. Journée sérieuse."],
+  "4-0": ["Grande clarté d'esprit. Humour introuvable. On ne peut pas tout avoir.", "Aujourd'hui, ton intelligence fait tout le travail et l'humour s'est mis en retrait.", "Le niveau intellectuel est haut. Le niveau humour, beaucoup moins et c'est OK.", "On sent une grande clarté d'esprit, mais zéro envie de faire rire qui que ce soit."],
   "3-4": ["Aujourd'hui drôle ET plutôt futée. Voilà une combinaison dangereuse.", "Plutôt intelligente et très drôle. Voilà l'illusion à la perfection.", "Tu tiens une combinaison redoutable.",],
   "3-3": ["On peut dire qu'aujourd'hui c'est mi-intelligence mi-humour. Un bon équilibre.", "Journée équilibrée. Ni le prix Nobel ni le Jamel Comedy Club. Et c'est bien."],
   "3-2": ["Plutôt futée et calme aujourd'hui. Tu observes. Tu retiens. Méfiance.", "Mode « je comprends tout mais je dis rien ». Tu accumules des munitions."],
-  "3-1": ["Tu réfléchis et ne rigoles pas. C'est que tu prépares quelque chose.", "Journée sérieuse. Les blagues attendront demain."],
-  "3-0": ["Futée mais dans un ennui profond. Le genre d'ennui philosophique.", "Tu penses, donc tu t'ennuies."],
+  "3-1": ["Tu réfléchis et ne rigoles pas. C'est que tu prépares quelque chose.", "Journée sérieuse. Les blagues attendront demain.", "Sérieuse et silencieuse. Soit tu complotes, soit tu cogites. Probablement les deux."],
+  "3-0": ["Futée, oui, mais très ennuyée.", "Tu penses, donc tu t'ennuies. Descartes n'avait pas prévu ça.", ],
   "2-4": ["Tu es hilarante aujourd'hui malgré toi. Les meilleures blagues sont accidentelles.", "Très drôle mais pas sûre de pourquoi. Mode comique instinctif."],
   "2-3": ["Tu es drôle et normale aujourd'hui. C'est une bonne journée, tout simplement.", "Rien d'extraordinaire mais l'humour est là. C'est déjà beaucoup."],
   "2-2": ["Ni génie ni bouffonne. Une version confort de toi-même finalement.", "C'est ok d'être dans le confort parfois. C'est même bien."],
@@ -82,7 +82,6 @@ export const MESSAGES = {
   "0-1": ["Commence petit : boire de l'eau, respirer, attendre que ça redescende.", "Ce n'est pas ton grand jour. Ça arrive, et ça passera."," L'inspiration est une vertue qui se perd, mais tu peux la retrouver en pensant à Abdoula"],
   "0-0": ["Aujourd'hui n'a rien d'un chef-d'œuvre. On fera mieux demain.", "Jour compliqué. Le seul objectif, c'est de tenir sans te juger.", "On a connu plus glorieux, mais survivre à la journée est déjà un programme."],
 };
-
 export const CONF_COLORS = ["#4fba96", "#8e83c9", "#d9932a", "#d04f4e", "#378ADD", "#D4537E", "#bf5b43"];
 
 // Validation rules
