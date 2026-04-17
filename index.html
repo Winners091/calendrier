@@ -8,8 +8,17 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<link rel="apple-touch-icon" href="logo.svg">
+<link rel="icon" type="image/svg+xml" href="logo.svg">
+
 </head>
 <body>
+
+<header class="site-header">
+  <img src="logo.png" alt="Logo Mon humeur" class="site-logo">
+  <h1>Romane du jour</h1>
+</header>
+
 <canvas id="confetti-canvas" aria-hidden="true"></canvas>
 
 <!-- Theme toggle button -->
@@ -35,10 +44,10 @@
         📝 Aujourd'hui
       </button>
       <button class="tab-btn" role="tab" aria-selected="false" aria-controls="garden-tab" data-tab="garden">
-        ❀ Jardin
+        🌱 Jardin
       </button>
       <button class="tab-btn" role="tab" aria-selected="false" aria-controls="history-tab" data-tab="history">
-        ✦ Historique
+        📊 Historique
       </button>
     </nav>
 
@@ -165,7 +174,7 @@
       <!-- Récap hebdomadaire -->
       <section class="recap-card" id="recap-section" aria-label="Récap de la semaine">
         <div class="recap-header">
-          <span class="recap-icon">✦</span>
+          <span class="recap-icon">📖</span>
           <h2 class="recap-title">Ma semaine</h2>
         </div>
         <div id="recap-content"></div>
