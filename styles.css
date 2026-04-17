@@ -243,7 +243,9 @@ textarea.journal-field:focus{border-color:rgba(191,91,67,.35);box-shadow:0 0 0 3
   height: 42px;
   object-fit: contain;
   display: block;
+  transform: translateY(3px);
 }
+
 
 
 @keyframes glow{50%{transform:translateX(-50%) scale(1.1);opacity:.75}}
