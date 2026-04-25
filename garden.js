@@ -1,10 +1,14 @@
 // Garden module
+import { AIService } from './ai-service.js';
+
 export class GardenManager {
   constructor(elements, storage, dataUtils, errorHandler) {
     this.elements = elements;
     this.storage = storage;
     this.dataUtils = dataUtils;
     this.errorHandler = errorHandler;
+    // Instanciation du service IA
+    this.aiService = new AIService(dataUtils);
   }
 
   async renderGarden() {
@@ -71,25 +75,46 @@ export class GardenManager {
     if (todaysCat === 'red' || todaysCat === 'gray') {
       const b = document.createElement('button');
       b.className = 'water-btn';
-      b.textContent = 'Arroser d\'encouragement';
+      b.textContent = "Arroser d'encouragement";
+
       b.onclick = async () => {
         try {
           if (!todayData) return;
-          
+
+          // Désactiver le bouton pendant la génération
+          b.disabled = true;
+          b.textContent = "Génération en cours…";
+          encouragementBox.textContent = "💧 …";
+
+          // Générer l'encouragement via l'IA (ou le générateur local)
+          const encouragementText = await this.aiService.generateEncouragement(
+            todayData.i,
+            todayData.h,
+            todayData.e !== undefined ? todayData.e : 2
+          );
+
           todayData.encouraged = true;
-          todayData.encouragement = this.getRandomEncouragement();
+          todayData.encouragement = encouragementText;
           await this.storage.set('romane-' + this.getTodayKey(), JSON.stringify(todayData));
+          
           encouragementBox.textContent = '💧 ' + todayData.encouragement;
+          b.textContent = "Arroser à nouveau";
+          b.disabled = false;
+
           this.renderGarden();
         } catch (error) {
           this.errorHandler.handle(error, 'Garden Watering');
+          b.textContent = "Arroser d'encouragement";
+          b.disabled = false;
         }
       };
       waterRow.appendChild(b);
       
+      // Afficher l'encouragement déjà généré, ou le message par défaut
       encouragementBox.textContent = todayData?.encouragement ? 
         '💧 ' + todayData.encouragement : 
-        'Aujourd\'hui la plante a surtout besoin d\'un peu d\'attention.';
+        "Aujourd'hui la plante a surtout besoin d'un peu d'attention.";
+
     } else if (todaysCat === 'teal') {
       encouragementBox.textContent = '🌸 Aujourd\'hui  le jardin prend bien la lumière.';
     } else if (todaysCat === 'amber' || todaysCat === 'purple') {
@@ -170,23 +195,6 @@ export class GardenManager {
       gray: { label: "Neutre", color: "#979790", cssClass: "mood-gray" },
     };
     return categories[key] || categories.gray;
-  }
-
-  getRandomEncouragement() {
-    const encouragements = [
-  "Les jours où tu te sens nulle ne velent pas tout dire.",
-  "Tu es fatiguée, pas ratée.",
-  "Même fatiguée, tu restes quelqu'un d'énergique(plus qu'une certaine personne).",
-  "Tu n'as pas besoin d'être brillante tous les jours pour avoir de la valeur.",
-  "On arrose aussi les jours compliqués. Surtout eux.",
-  "Tu peux être en vrac et rester admirable(je viens de finir un portrait de toi).",
-  "Les jours bas ne retirent rien à ce que tu sais faire.(dormir, souplesse arrière, manger, danser, etc.)",
-  "Je suis en panne d'inspiration, appelle-moi dès que tu peux(veux ou besoin).",
-  "Tu as le droit d’avoir un jour nul sans te résumer à ça.",
-  "Même les plus petits pas comptent(une allision à tes petits pieds).",
-  "Un grand homme a dit un jour: tu as des belles épaules",
-    ];
-    return encouragements[Math.floor(Math.random() * encouragements.length)];
   }
 
   getTodayKey() {
