@@ -1,5 +1,5 @@
 // Service Worker for Romane du jour PWA
-const CACHE_NAME = 'romane-du-jour-v1';
+const CACHE_NAME = 'romane-du-jour-v2'; // version incrémentée pour forcer le rechargement
 const urlsToCache = [
   '/',
   '/index-local.html',
@@ -16,11 +16,14 @@ const urlsToCache = [
   '/garden.js',
   '/ui.js',
   '/app-new.js',
+  '/ai-service.js', // nouveau module IA
   'https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap'
 ];
 
 // Install event - cache resources
 self.addEventListener('install', event => {
+  // Force le nouveau service worker à prendre le contrôle immédiatement
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
@@ -45,7 +48,7 @@ self.addEventListener('activate', event => {
           }
         })
       );
-    })
+    }).then(() => self.clients.claim()) // prend le contrôle de toutes les pages ouvertes
   );
 });
 
