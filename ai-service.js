@@ -1,8 +1,3 @@
-// ai-service.js — Module de génération d'encouragements personnalisés
-// Ton : bienveillant, pas mièvre, un tantinet taquin.
-// Fonctionne 100% en local (pas de clé API requise).
-// Une clé API peut être ajoutée pour activer la génération via LLM.
-
 export class AIService {
   constructor(dataUtils) {
     this.dataUtils = dataUtils;
