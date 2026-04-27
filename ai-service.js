@@ -61,121 +61,101 @@ Scores du jour (0 = bas, 4 = haut) : Intellect ${i}/4, Humour ${h}/4, Énergie $
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // GÉNÉRATEUR PROCÉDURAL LOCAL - CONDITIONS PRÉCISES
+  // GÉNÉRATEUR PROCÉDURAL LOCAL - ÉNERGIE TOUJOURS PRISE EN COMPTE
   // ═══════════════════════════════════════════════════════════════════════════
 
   _generateProceduralEncouragement(i, h, e) {
     const pick = arr => arr[Math.floor(Math.random() * arr.length)];
 
-    // 1. TOUT À ZÉRO (0-0-0) ou presque
-    if (i <= 1 && h <= 1 && e <= 1) {
+    // 1. ÉNERGIE TRÈS BASSE (e <= 1)
+    // Ici l'énergie dicte tout, peu importe le reste.
+    if (e <= 1) {
+      if (h >= 3) {
+        return pick([
+          "Le corps lâche, mais l'humour reste. Quelle belle résilience.",
+          "Épuisée, mais toujours prête à lancer une vanne. Garde ça.",
+          "Ton autodérision est intacte malgré cette fatigue écrasante."
+        ]);
+      }
+      if (i >= 3) {
+        return pick([
+          "L'esprit tourne à 100 à l'heure dans un corps à 0%. Dors.",
+          "Tu analyses tout, même ta propre fatigue. Mets le cerveau sur pause.",
+          "Fatiguée mais lucide. Un bon livre et au lit, tu as fait ta part."
+        ]);
+      }
+      // Fatigue totale (i et h bas aussi)
       return pick([
-        "Le cerveau, le corps et le rire sont en pause. Autorise-toi ce silence.",
-        "Même ton roman préféré serait trop lourd aujourd'hui. Ferme les yeux.",
-        "Aucune énergie, aucune idée, et c'est très bien. Tu as le droit d'être à vide.",
-        "Tu es littéralement à 0%. Brancher le chargeur et attendre demain.",
-        "Le monde attendra. Ta seule mission ce soir : ne rien faire du tout.",
-        "Même les plus grandes équilibristes finissent par s'allonger sur le tapis."
+        "Batteries à plat. La seule acrobatie permise aujourd'hui est de s'allonger.",
+        "Zéro énergie, et c'est très bien. Tu as le droit d'être à vide.",
+        "Le monde attendra. Ta seule mission ce soir : te reposer vraiment.",
+        "Même les plus fortes finissent par s'effondrer sur le canapé. Profites-en."
       ]);
     }
 
-    // 2. FATIGUE MAIS HUMOUR INTACT (e <= 1, h >= 3)
-    if (e <= 1 && h >= 3) {
+    // 2. ÉNERGIE DÉBORDANTE (e >= 3)
+    if (e >= 3) {
+      if (i <= 1 && h <= 1) {
+        return pick([
+          "L'énergie est là, mais l'humeur coince. Va marcher sur les mains pour décompresser.",
+          "Pleine d'énergie mais l'esprit brouillé. Une bonne séance de sport réglera ça.",
+          "Tu es une pile électrique frustrée. Canalise ça dans le mouvement."
+        ]);
+      }
+      if (i >= 3 && h <= 1) {
+        return pick([
+          "Énergique et redoutablement sérieuse. Le patriarcat n'a qu'à bien se tenir.",
+          "Une efficacité glaciale aujourd'hui. Rien ne t'arrête.",
+          "Tu es là pour accomplir des choses, avec une force incroyable."
+        ]);
+      }
+      if (i >= 3 && h >= 3) {
+        return pick([
+          "Intelligente, drôle, pleine d'énergie. L'univers est à toi aujourd'hui.",
+          "Tu as craqué le code de la journée parfaite. Savoure chaque instant.",
+          "Avec cette forme, tu pourrais lire, faire le poirier et refaire le monde en même temps."
+        ]);
+      }
+      // Énergie haute mais i/h moyens
       return pick([
-        "Épuisée, mais toujours capable de lâcher une bonne vanne. Quel talent.",
-        "Le corps ne suit plus, mais ton ironie est intacte. Garde ce bouclier.",
-        "Faire rire alors qu'on tient à peine debout, c'est ta spécialité.",
-        "Tu n'as plus la force de t'énerver, alors tu en ris. C'est brillant.",
-        "Ton autodérision compense largement tes batteries à plat."
+        "Une belle vitalité aujourd'hui ! Sers-t'en pour faire ce qui te plaît vraiment.",
+        "L'énergie est au rendez-vous. Ne la gâche pas en corvées inutiles.",
+        "Tu as la force de soulever des montagnes, ou juste de passer une super journée."
       ]);
     }
 
-    // 3. FATIGUE MAIS CERVEAU QUI TOURNE (e <= 1, i >= 3)
-    if (e <= 1 && i >= 3) {
+    // 3. ÉNERGIE MOYENNE (e = 2)
+    // Ici on se concentre plus sur l'intellect et l'humour, car l'énergie n'est ni un problème ni un atout majeur.
+    if (i <= 1 && h <= 1) {
       return pick([
-        "Le corps dit stop, mais l'esprit continue d'analyser le monde.",
-        "Tu es physiquement épuisée, mais tes idées sont toujours aussi claires.",
-        "Laisse un peu ton cerveau se reposer avec le reste de ton corps.",
-        "Ton esprit déconstruit encore le patriarcat pendant que tu t'effondres sur le canapé.",
-        "Trop fatiguée pour agir, mais assez lucide pour tout comprendre."
+        "L'énergie est normale, mais l'humeur est grise. Prends un bon bouquin et déconnecte.",
+        "Journée brouillon sans éclat. Tu as le droit de te sentir en décalage.",
+        "Ni trop fatiguée, ni vraiment là. Lâche la pression pour ce soir."
       ]);
     }
-
-    // 4. BEAUCOUP D'ÉNERGIE MAIS HUMEUR MAUSSADE (e >= 3, h <= 1, i <= 1)
-    if (e >= 3 && h <= 1 && i <= 1) {
-      return pick([
-        "Tu as l'énergie de tout casser, mais pas l'envie de sourire. C'est un droit.",
-        "Pleine d'énergie mais l'esprit embrumé. Va faire du sport, ça videra la tête.",
-        "Tu es une pile électrique frustrée. Canalise ça dans quelque chose de physique.",
-        "L'énergie est là, mais l'inspiration manque. Bouge, ça reviendra.",
-        "Marche sur les mains, cours, saute. Épuise ce corps pour calmer la tête."
-      ]);
-    }
-
-    // 5. TOUT VA BIEN MAIS ZÉRO HUMOUR (i >= 3, e >= 3, h <= 1)
-    if (i >= 3 && e >= 3 && h <= 1) {
-      return pick([
-        "Tu es brillante et en forme, mais pas d'humeur à plaisanter. Redoutable.",
-        "Une efficacité glaciale aujourd'hui. Rien ne t'arrête, pas même une blague.",
-        "Le mode 'machine de guerre' est activé. Le fun attendra demain.",
-        "Tu es là pour accomplir des choses, pas pour amuser la galerie.",
-        "Intelligente, dynamique, sérieuse. Le patriarcat tremble."
-      ]);
-    }
-
-    // 6. MOYEN PARTOUT (2-2-2)
-    if (i === 2 && h === 2 && e === 2) {
-      return pick([
-        "L'équilibre parfait de la normalité. C'est reposant, une journée sans vagues.",
-        "Tu n'es ni au fond du trou, ni sur le toit du monde. Juste toi.",
-        "Une belle journée tiède, comme une bonne tasse de thé. Profites-en.",
-        "Rien à signaler, et c'est une excellente nouvelle.",
-        "Tu navigues au milieu, tranquille. Continue comme ça."
-      ]);
-    }
-
-    // 7. TOUT AU TOP (4-4-4) ou presque
-    if (i >= 3 && h >= 3 && e >= 3) {
-      return pick([
-        "Intelligente, drôle, pleine d'énergie. L'univers est à toi aujourd'hui.",
-        "Tu as craqué le code de la journée parfaite. Savoure chaque instant.",
-        "Avec cette forme, tu pourrais lire, faire le poirier et refaire le monde en même temps.",
-        "Tu es dans un état de grâce. Garde cette étincelle précieusement.",
-        "Rien ne t'arrête aujourd'hui. Fonce, tu es lumineuse."
-      ]);
-    }
-
-    // 8. CAS PAR DÉFAUT (Pour les combinaisons restantes)
-    const cat = this.dataUtils.getCategory(i, h);
-    if (cat === "red") {
-      return pick([
-        "Journée brouillon. Prends un livre, déconnecte, on efface tout.",
-        "Tu as le droit de te sentir en décalage. Lâche la pression.",
-        "Même les plus fortes ont des jours où rien ne s'aligne.",
-        "Ne te juge pas sur une journée comme ça. Demain est une autre page."
-      ]);
-    }
-    if (cat === "amber") {
+    if (h >= 3 && i <= 1) {
       return pick([
         "Ton sens de l'humour te sauve toujours des journées compliquées.",
         "Tu ne saisis peut-être pas tout aujourd'hui, mais tu sais en rire.",
         "L'autodérision est une arme massive. Tu la manies à la perfection."
       ]);
     }
-    if (cat === "purple") {
+    if (i >= 3 && h <= 1) {
       return pick([
         "Ton esprit est une lame bien aiguisée aujourd'hui. Sers-t'en bien.",
         "La réflexion est là. Tu bâtis des choses solides, même sans bruit.",
         "Ton intelligence silencieuse est ta plus grande force."
       ]);
     }
-    if (cat === "teal") {
+    if (i === 2 && h === 2) {
       return pick([
-        "Tu gères sur tous les fronts. Laisse éclater ton talent.",
-        "L'esprit vif, la répartie rapide. Tu es sur un nuage."
+        "L'équilibre parfait de la normalité. C'est reposant, une journée sans vagues.",
+        "Tu n'es ni au fond du trou, ni sur le toit du monde. Juste toi.",
+        "Une belle journée tiède, comme une bonne tasse de thé. Profites-en."
       ]);
     }
-
+    
+    // Fallback de sécurité (normalement inatteignable avec les conditions au-dessus)
     return pick([
       "Tu fais de ton mieux avec ce que tu as aujourd'hui. C'est parfait.",
       "Chaque jour est différent, l'important c'est de continuer à avancer.",
