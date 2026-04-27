@@ -1,4 +1,3 @@
-// Garden module
 export class GardenManager {
   constructor(elements, storage, dataUtils, errorHandler) {
     this.elements = elements;
@@ -112,9 +111,13 @@ export class GardenManager {
       }
       
       const todaysCat = todayData ? this.dataUtils.getCategory(todayData.i, todayData.h) : null;
+      const todaysEnergy = todayData ? (todayData.e !== undefined ? todayData.e : 2) : null;
       const encouragementBox = document.getElementById('encouragement-box');
-      
-      if (todaysCat === 'red' || todaysCat === 'gray') {
+
+      // Le bouton apparaît si la catégorie est difficile (red/gray) OU si l'énergie est basse (<= 1)
+      const needsWatering = todaysCat === 'red' || todaysCat === 'gray' || todaysEnergy <= 1;
+
+      if (needsWatering) {
         const b = document.createElement('button');
         b.className = 'water-btn';
         b.textContent = "Arroser d'encouragement";
@@ -130,7 +133,7 @@ export class GardenManager {
             const encouragementText = await this._getEncouragement(
               todayData.i,
               todayData.h,
-              todayData.e !== undefined ? todayData.e : 2
+              todaysEnergy
             );
 
             todayData.encouraged = true;
@@ -155,7 +158,7 @@ export class GardenManager {
           '💧 ' + todayData.encouragement : 
           "Aujourd'hui la plante a surtout besoin d'un peu d'attention.";
 
-      } else if (todaysCat === 'teal') {
+      } else if (todaysCat === 'teal' && todaysEnergy >= 2) {
         encouragementBox.textContent = '🌸 Aujourd\'hui le jardin prend bien la lumière.';
       } else if (todaysCat === 'amber' || todaysCat === 'purple') {
         encouragementBox.textContent = "🌱 Aujourd'hui, ça pousse doucement. C'est déjà très bien.";
