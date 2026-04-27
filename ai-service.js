@@ -3,37 +3,22 @@ export class AIService {
     this.dataUtils = dataUtils;
 
     // ─── Configuration API (optionnel) ───────────────────────────────────────
-    // Remplir cette clé pour activer la génération via OpenAI.
-    // ATTENTION : ne jamais committer une vraie clé dans un dépôt public.
     this.apiKey = "";
     this.apiUrl = "https://api.openai.com/v1/chat/completions";
     this.apiModel = "gpt-4o-mini";
-    // ─────────────────────────────────────────────────────────────────────────
 
-    // Mots interdits — garde-fou pour les réponses API
+    // Mots interdits
     this.forbiddenWords = [
       "suicide", "mourir", "mort", "tuer", "violence",
       "sang", "dépression sévère", "automutilation"
     ];
   }
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // POINT D'ENTRÉE PRINCIPAL
-  // ═══════════════════════════════════════════════════════════════════════════
-
-  /**
-   * Génère un encouragement personnalisé.
-   * @param {number} i  Intellect (0–4)
-   * @param {number} h  Humour (0–4)
-   * @param {number} e  Énergie (0–4)
-   * @returns {Promise<string>}
-   */
   async generateEncouragement(i, h, e) {
     if (this.apiKey) {
       try {
         const aiMessage = await this._callRealAI(i, h, e);
         if (this._isSafe(aiMessage)) return aiMessage;
-        console.warn("[AIService] Message IA rejeté par le filtre. Basculement local.");
       } catch (err) {
         console.error("[AIService] Erreur API, basculement local :", err);
       }
@@ -41,19 +26,12 @@ export class AIService {
     return this._generateProceduralEncouragement(i, h, e);
   }
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // APPEL API LLM (optionnel)
-  // ═══════════════════════════════════════════════════════════════════════════
-
   async _callRealAI(i, h, e) {
-    const systemPrompt = `Tu es une amie virtuelle bienveillante mais franchement taquine.
-Génère UNE SEULE phrase d'encouragement (15 mots max).
-Ton ton : direct, pas mièvre, légèrement sarcastique mais jamais blessant.
-Scores du jour (0 = très bas, 4 = excellent) :
-- Intellect : ${i}/4
-- Humour : ${h}/4
-- Énergie : ${e}/4
-Adapte ta phrase à ces scores. Sois drôle si l'humour est haut, compatissante si l'énergie est basse.`;
+    const systemPrompt = `Tu es une amie virtuelle.
+Génère UNE SEULE phrase d'encouragement très courte (10 mots max).
+Ton but : remonter le moral de façon naturelle, sans grands discours ni clichés.
+Centres d'intérêt possibles : cirque (équilibre sur les mains), féminisme, lecture.
+Scores du jour (0 = bas, 4 = haut) : Intellect ${i}/4, Humour ${h}/4, Énergie ${e}/4.`;
 
     const response = await fetch(this.apiUrl, {
       method: "POST",
@@ -67,8 +45,8 @@ Adapte ta phrase à ces scores. Sois drôle si l'humour est haut, compatissante 
           { role: "system", content: systemPrompt },
           { role: "user", content: "Mon encouragement du jour ?" }
         ],
-        max_tokens: 60,
-        temperature: 0.85
+        max_tokens: 30,
+        temperature: 0.8
       })
     });
 
@@ -77,170 +55,131 @@ Adapte ta phrase à ces scores. Sois drôle si l'humour est haut, compatissante 
     return data.choices[0].message.content.trim();
   }
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // FILTRE DE SÉCURITÉ
-  // ═══════════════════════════════════════════════════════════════════════════
-
   _isSafe(text) {
     const lower = text.toLowerCase();
     return !this.forbiddenWords.some(w => lower.includes(w));
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // GÉNÉRATEUR PROCÉDURAL LOCAL
-  // Produit des centaines de combinaisons différentes selon les 3 scores.
+  // GÉNÉRATEUR PROCÉDURAL LOCAL - CONDITIONS PRÉCISES
   // ═══════════════════════════════════════════════════════════════════════════
 
   _generateProceduralEncouragement(i, h, e) {
     const pick = arr => arr[Math.floor(Math.random() * arr.length)];
-    const cat  = this.dataUtils.getCategory(i, h);
 
-    // ── Banques de fragments ──────────────────────────────────────────────
-
-    // A. Observation sur l'énergie
-    const energyObs = {
-      0: [
-        "L'énergie est en mode hibernation totale.",
-        "Tu as l'entrain d'une huître un dimanche soir.",
-        "Même tes cellules ont l'air fatiguées.",
-        "Niveau batterie : 2 %. Brancher dès que possible.",
-        "Si l'énergie était un feu, là c'est juste une braise humide."
-      ],
-      1: [
-        "L'énergie est en service minimum.",
-        "Tu tournes au ralenti, mais tu tournes.",
-        "Mode économie d'énergie activé.",
-        "Pas au top, mais pas à plat non plus."
-      ],
-      2: [
-        "Énergie correcte, ni molle ni survoltée.",
-        "Tu survis, c'est déjà respectable.",
-        "Journée banale sur le front de la fatigue.",
-        "Ni épuisée ni pétillante. La moyenne, quoi."
-      ],
-      3: [
-        "Plutôt en forme aujourd'hui.",
-        "L'énergie est là, c'est une bonne nouvelle.",
-        "Tu pourrais presque faire quelque chose d'utile."
-      ],
-      4: [
-        "Tu as mangé des piles au petit-déjeuner ?",
-        "Avec cette énergie, calme-toi un peu.",
-        "Tu pourrais alimenter une petite ville.",
-        "Trop d'énergie, c'est presque suspect."
-      ]
-    };
-
-    // B. Observation sur l'intellect + humour (combinée)
-    const brainHumorObs = (() => {
-      if (i <= 1 && h <= 1) return [
-        "Le cerveau a pris des RTT et l'humour est resté au lit.",
-        "Ni génie ni comique aujourd'hui. Journée de transition.",
-        "On ne peut pas être brillante ET drôle tous les jours. Aujourd'hui, ni l'un ni l'autre.",
-        "Cerveau en veille, humour introuvable. C'est pas glorieux, mais ça arrive."
-      ];
-      if (i >= 3 && h >= 3) return [
-        "Génie ET drôle le même jour ? Laisse-en un peu aux autres.",
-        "Cerveau en ébullition et blagues au top. Tu es insupportable de perfection.",
-        "Tu as piraté le système aujourd'hui.",
-        "Intelligente et drôle simultanément, c'est presque énervant."
-      ];
-      if (i <= 1 && h >= 3) return [
-        "Tu compenses tes neurones fatigués par un humour de qualité.",
-        "Pas très futée aujourd'hui, mais au moins tu fais rire.",
-        "L'intelligence a fui, mais la comédie te sauve.",
-        "Se sentir bête et faire rire tout le monde : c'est du talent, en fait."
-      ];
-      if (i >= 3 && h <= 1) return [
-        "Tu as tout compris, mais tu as oublié de sourire.",
-        "Cerveau à 100 %, capital sympathie à 0.",
-        "Trop occupée à être intelligente pour faire des blagues.",
-        "Grande clarté d'esprit, humour introuvable. On ne peut pas tout avoir."
-      ];
-      if (i === 2 && h === 2) return [
-        "Ton cerveau fait le minimum syndical, et c'est OK.",
-        "Rien de transcendant, mais rien de catastrophique non plus.",
-        "Journée 50/50. C'est honnête.",
-        "Ni génie ni bouffonne. Une version confort de toi-même."
-      ];
-      if (h > i) return [
-        "Plus drôle que futée aujourd'hui. La comédie compense.",
-        "L'humour prend le dessus sur la réflexion. Bonne stratégie de survie.",
-        "Tu réfléchis moins, mais tu fais plus rire. Équilibre discutable, mais équilibre quand même."
-      ];
-      return [
-        "Plus futée que drôle aujourd'hui. Le sérieux a ses mérites.",
-        "Cerveau actif, humour en retrait. Mode analytique.",
-        "Tu penses trop vite pour faire de bonnes blagues. Les autres suivent à peine."
-      ];
-    })();
-
-    // C. Conclusion selon la catégorie globale
-    const conclusions = {
-      red: [
-        "Mais bon, on t'aime bien quand même.",
-        "Allez, demain tu seras peut-être moins nulle. Ou pas.",
-        "Bois de l'eau, va dormir, et arrête de te juger.",
-        "Survis à cette journée. On fera les comptes plus tard.",
-        "Même les plantes vertes ont des jours sans.",
-        "Repose-toi. Le monde tournera sans tes fulgurances aujourd'hui.",
-        "C'est pas la fin du monde, juste une journée à oublier.",
-        "Tiens le coup. C'est tout ce qu'on te demande.",
-        "Un jour nul ne résume pas qui tu es. Heureusement."
-      ],
-      gray: [
-        "Journée grise, mais tu es là. C'est déjà quelque chose.",
-        "Le néant, c'est reposant parfois.",
-        "Ni bien ni mal. C'est une journée, pas un verdict.",
-        "Continue. Même à vitesse réduite.",
-        "La neutralité, c'est sous-côté comme état d'esprit."
-      ],
-      amber: [
-        "Drôle mais bête, c'est un charme particulier.",
-        "Tu fais rire les gens sans trop savoir pourquoi. C'est un don.",
-        "Continue comme ça, ou presque.",
-        "Ne prends pas trop la grosse tête non plus."
-      ],
-      purple: [
-        "Intelligente mais pas drôle aujourd'hui. Les gens te respectent, au moins.",
-        "Sérieuse et efficace. Pas la plus fun, mais la plus fiable.",
-        "Continue comme ça, ou presque.",
-        "Bravo, tu as gagné le droit de te la péter un peu."
-      ],
-      teal: [
-        "Profite, ça ne durera pas éternellement.",
-        "Ne prends pas trop la grosse tête non plus.",
-        "Bravo, tu as gagné le droit de te la péter un peu.",
-        "Continue comme ça, ou presque.",
-        "L'univers abuse un peu avec toi aujourd'hui."
-      ]
-    };
-
-    // ── Construction de la phrase ─────────────────────────────────────────
-
-    // On choisit le niveau d'énergie le plus proche
-    const eLevel = Math.round(Math.max(0, Math.min(4, e)));
-    const energyPart   = pick(energyObs[eLevel]);
-    const brainPart    = pick(brainHumorObs);
-    const conclusionPart = pick(conclusions[cat] || conclusions.gray);
-
-    // Assemblage : on varie la structure pour éviter la répétition
-    const structures = [
-      `${energyPart} ${brainPart} ${conclusionPart}`,
-      `${brainPart} ${energyPart} ${conclusionPart}`,
-      `${energyPart} ${conclusionPart}`,
-      `${brainPart} ${conclusionPart}`
-    ];
-
-    // On favorise la structure complète (3 parties) mais on varie parfois
-    const weights = [0.4, 0.3, 0.15, 0.15];
-    const rand = Math.random();
-    let cumul = 0;
-    for (let s = 0; s < structures.length; s++) {
-      cumul += weights[s];
-      if (rand < cumul) return structures[s];
+    // 1. TOUT À ZÉRO (0-0-0) ou presque
+    if (i <= 1 && h <= 1 && e <= 1) {
+      return pick([
+        "Le cerveau, le corps et le rire sont en pause. Autorise-toi ce silence.",
+        "Même ton roman préféré serait trop lourd aujourd'hui. Ferme les yeux.",
+        "Aucune énergie, aucune idée, et c'est très bien. Tu as le droit d'être à vide.",
+        "Tu es littéralement à 0%. Brancher le chargeur et attendre demain.",
+        "Le monde attendra. Ta seule mission ce soir : ne rien faire du tout.",
+        "Même les plus grandes équilibristes finissent par s'allonger sur le tapis."
+      ]);
     }
 
-    return structures[0];
+    // 2. FATIGUE MAIS HUMOUR INTACT (e <= 1, h >= 3)
+    if (e <= 1 && h >= 3) {
+      return pick([
+        "Épuisée, mais toujours capable de lâcher une bonne vanne. Quel talent.",
+        "Le corps ne suit plus, mais ton ironie est intacte. Garde ce bouclier.",
+        "Faire rire alors qu'on tient à peine debout, c'est ta spécialité.",
+        "Tu n'as plus la force de t'énerver, alors tu en ris. C'est brillant.",
+        "Ton autodérision compense largement tes batteries à plat."
+      ]);
+    }
+
+    // 3. FATIGUE MAIS CERVEAU QUI TOURNE (e <= 1, i >= 3)
+    if (e <= 1 && i >= 3) {
+      return pick([
+        "Le corps dit stop, mais l'esprit continue d'analyser le monde.",
+        "Tu es physiquement épuisée, mais tes idées sont toujours aussi claires.",
+        "Laisse un peu ton cerveau se reposer avec le reste de ton corps.",
+        "Ton esprit déconstruit encore le patriarcat pendant que tu t'effondres sur le canapé.",
+        "Trop fatiguée pour agir, mais assez lucide pour tout comprendre."
+      ]);
+    }
+
+    // 4. BEAUCOUP D'ÉNERGIE MAIS HUMEUR MAUSSADE (e >= 3, h <= 1, i <= 1)
+    if (e >= 3 && h <= 1 && i <= 1) {
+      return pick([
+        "Tu as l'énergie de tout casser, mais pas l'envie de sourire. C'est un droit.",
+        "Pleine d'énergie mais l'esprit embrumé. Va faire du sport, ça videra la tête.",
+        "Tu es une pile électrique frustrée. Canalise ça dans quelque chose de physique.",
+        "L'énergie est là, mais l'inspiration manque. Bouge, ça reviendra.",
+        "Marche sur les mains, cours, saute. Épuise ce corps pour calmer la tête."
+      ]);
+    }
+
+    // 5. TOUT VA BIEN MAIS ZÉRO HUMOUR (i >= 3, e >= 3, h <= 1)
+    if (i >= 3 && e >= 3 && h <= 1) {
+      return pick([
+        "Tu es brillante et en forme, mais pas d'humeur à plaisanter. Redoutable.",
+        "Une efficacité glaciale aujourd'hui. Rien ne t'arrête, pas même une blague.",
+        "Le mode 'machine de guerre' est activé. Le fun attendra demain.",
+        "Tu es là pour accomplir des choses, pas pour amuser la galerie.",
+        "Intelligente, dynamique, sérieuse. Le patriarcat tremble."
+      ]);
+    }
+
+    // 6. MOYEN PARTOUT (2-2-2)
+    if (i === 2 && h === 2 && e === 2) {
+      return pick([
+        "L'équilibre parfait de la normalité. C'est reposant, une journée sans vagues.",
+        "Tu n'es ni au fond du trou, ni sur le toit du monde. Juste toi.",
+        "Une belle journée tiède, comme une bonne tasse de thé. Profites-en.",
+        "Rien à signaler, et c'est une excellente nouvelle.",
+        "Tu navigues au milieu, tranquille. Continue comme ça."
+      ]);
+    }
+
+    // 7. TOUT AU TOP (4-4-4) ou presque
+    if (i >= 3 && h >= 3 && e >= 3) {
+      return pick([
+        "Intelligente, drôle, pleine d'énergie. L'univers est à toi aujourd'hui.",
+        "Tu as craqué le code de la journée parfaite. Savoure chaque instant.",
+        "Avec cette forme, tu pourrais lire, faire le poirier et refaire le monde en même temps.",
+        "Tu es dans un état de grâce. Garde cette étincelle précieusement.",
+        "Rien ne t'arrête aujourd'hui. Fonce, tu es lumineuse."
+      ]);
+    }
+
+    // 8. CAS PAR DÉFAUT (Pour les combinaisons restantes)
+    const cat = this.dataUtils.getCategory(i, h);
+    if (cat === "red") {
+      return pick([
+        "Journée brouillon. Prends un livre, déconnecte, on efface tout.",
+        "Tu as le droit de te sentir en décalage. Lâche la pression.",
+        "Même les plus fortes ont des jours où rien ne s'aligne.",
+        "Ne te juge pas sur une journée comme ça. Demain est une autre page."
+      ]);
+    }
+    if (cat === "amber") {
+      return pick([
+        "Ton sens de l'humour te sauve toujours des journées compliquées.",
+        "Tu ne saisis peut-être pas tout aujourd'hui, mais tu sais en rire.",
+        "L'autodérision est une arme massive. Tu la manies à la perfection."
+      ]);
+    }
+    if (cat === "purple") {
+      return pick([
+        "Ton esprit est une lame bien aiguisée aujourd'hui. Sers-t'en bien.",
+        "La réflexion est là. Tu bâtis des choses solides, même sans bruit.",
+        "Ton intelligence silencieuse est ta plus grande force."
+      ]);
+    }
+    if (cat === "teal") {
+      return pick([
+        "Tu gères sur tous les fronts. Laisse éclater ton talent.",
+        "L'esprit vif, la répartie rapide. Tu es sur un nuage."
+      ]);
+    }
+
+    return pick([
+      "Tu fais de ton mieux avec ce que tu as aujourd'hui. C'est parfait.",
+      "Chaque jour est différent, l'important c'est de continuer à avancer.",
+      "Tu trouves ton équilibre petit à petit. Sois indulgente avec toi-même."
+    ]);
   }
 }
