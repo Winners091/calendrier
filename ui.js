@@ -1,4 +1,3 @@
-// UI management module
 export class UIManager {
   constructor(elements, dataUtils, validator, performanceUtils) {
     this.elements = elements;
@@ -8,7 +7,8 @@ export class UIManager {
     this.state = {
       intellVal: 2,
       humorVal: 2,
-      energyVal: 2
+      energyVal: 2,
+      socialVal: 2
     };
   }
 
@@ -17,17 +17,23 @@ export class UIManager {
       this.state.intellVal = this.validator.validateSlider(this.elements.intellSlider.value, { min: 0, max: 4 });
       this.state.humorVal = this.validator.validateSlider(this.elements.humorSlider.value, { min: 0, max: 4 });
       this.state.energyVal = this.validator.validateSlider(this.elements.energySlider.value, { min: 0, max: 4 });
+      this.state.socialVal = this.elements.socialSlider
+        ? this.validator.validateSlider(this.elements.socialSlider.value, { min: 0, max: 4 })
+        : 2;
       
       // Update labels
       const labels = {
         intell: ["Très bête", "Pas brillante", "Correcte", "Plutôt futée", "Génie"],
         humor: ["Ennui morbide", "Pas drôle", "Ça passe", "Drôle", "Très drôle"],
-        energy: ["Épuisée", "Fatiguée", "Normale", "En forme", "Au top"]
+        energy: ["Épuisée", "Fatiguée", "Normale", "En forme", "Au top"],
+        social: ["Isolée", "Peu entourée", "Correcte", "Bien entourée", "Liens forts"]
       };
       
       document.getElementById("intell-label").textContent = labels.intell[this.state.intellVal];
       document.getElementById("humor-label").textContent = labels.humor[this.state.humorVal];
       document.getElementById("energy-label").textContent = labels.energy[this.state.energyVal];
+      const socialLabelEl = document.getElementById("social-label");
+      if (socialLabelEl) socialLabelEl.textContent = labels.social[this.state.socialVal];
       
       // Update ARIA attributes
       this.elements.intellSlider.setAttribute("aria-valuenow", this.state.intellVal);
@@ -36,11 +42,16 @@ export class UIManager {
       this.elements.humorSlider.setAttribute("aria-valuetext", labels.humor[this.state.humorVal]);
       this.elements.energySlider.setAttribute("aria-valuenow", this.state.energyVal);
       this.elements.energySlider.setAttribute("aria-valuetext", labels.energy[this.state.energyVal]);
+      if (this.elements.socialSlider) {
+        this.elements.socialSlider.setAttribute("aria-valuenow", this.state.socialVal);
+        this.elements.socialSlider.setAttribute("aria-valuetext", labels.social[this.state.socialVal]);
+      }
       
       // Update slider fills
       this.updateSliderFill(this.elements.intellSlider);
       this.updateSliderFill(this.elements.humorSlider);
       this.updateSliderFill(this.elements.energySlider);
+      if (this.elements.socialSlider) this.updateSliderFill(this.elements.socialSlider);
       
       // Update message with animation
       this.elements.msgBox.style.opacity = ".25";
@@ -64,7 +75,7 @@ export class UIManager {
           "1-4": ["Tu te sens bête mais fais rire tout le monde. C'est le summum de l'intelligence sociale, en fait.", "Les gens les plus drôles sont souvent ceux qui se croient pas malins. Tu en es la preuve."],
           "1-3": ["Pas brillante mais drôle. Tu as trouvé la meilleure stratégie de survie sociale.", "Tu compenses brillamment. Personne ne voit rien."],
           "1-2": ["Tu te sens pas au top aujourd'hui. C'est ok, même les cellules ont besoin de mitose pour se régénérer.", "Journée un peu molle. Demain tu seras de retour."],
-          "1-1": ["En veille prolongée. Le système redémarrera quand la motivation aura fini sa sieste.", "Ni drôle ni futée, mais toujours Romane. C'est déjà pas mal."],
+          "1-1": ["En veille prolongée. Le système redémarrera quand la motivation aura fini sa sieste.", "Ni drôle ni futée, mais toujours toi. C'est déjà pas mal."],
           "1-0": ["Même si ton cerveau fait parfois des pauses syndicales et ton humour semble avoir été livré sans mode d'emploi, tu es quand même une personne rayonnante.", "L'ennui plus la flemme intellectuelle. Il te faut un canapé et une série."],
           "0-4": ["Si j'ai bien compris tu te sens très bête mais es absolument hilarante. C'est un bon superpouvoir.", "Se sentir bête et faire rire tout le monde : c'est du talent."],
           "0-3": ["Tu compenses ton cerveau en mode veille avec un humour de qualité. Bonne stratégie.", "Drôle malgré tout. Tu as le sens des priorités."],
@@ -160,6 +171,9 @@ export class UIManager {
       this.elements.intellSlider.addEventListener("input", () => this.updateMessage());
       this.elements.humorSlider.addEventListener("input", () => this.updateMessage());
       this.elements.energySlider.addEventListener("input", () => this.updateMessage());
+      if (this.elements.socialSlider) {
+        this.elements.socialSlider.addEventListener("input", () => this.updateMessage());
+      }
     } catch (error) {
       console.error('Error setting up UI event listeners:', error);
     }
