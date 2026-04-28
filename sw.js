@@ -1,4 +1,3 @@
-// Service Worker for Romane du jour PWA
 const CACHE_NAME = 'romane-du-jour-v2'; // version incrémentée pour forcer le rechargement
 const urlsToCache = [
   '/',
