@@ -48,10 +48,20 @@
       <section class="card" aria-label="Humeur du jour">
         <p class="section-label" id="section-label">Comment tu te sens aujourd'hui ?</p>
 
-        <!-- Question du jour -->
+        <!-- Question du jour + réponse groupées -->
         <div class="question-card">
           <p class="question-card-label">Question du jour</p>
           <p class="question-text" id="daily-question">Chargement…</p>
+        </div>
+
+        <!-- Réponse à la question du jour (juste en dessous) -->
+        <div class="journal-block">
+          <label class="journal-label" for="question-field">
+            <em>Ta réponse</em>
+          </label>
+          <textarea id="question-field" class="journal-field" maxlength="400"
+            placeholder="Écris ce qui te vient, en 2-3 phrases…"></textarea>
+          <p class="char-count" id="question-count">0 / 400</p>
         </div>
 
         <!-- Sliders humeur -->
@@ -86,6 +96,17 @@
           <div class="extremes" aria-hidden="true"><span>Épuisée</span><span>En forme</span></div>
         </div>
 
+        <!-- Slider liens sociaux -->
+        <div class="slider-row">
+          <div class="slider-head">
+            <label class="slider-name" for="social-slider">Liens</label>
+            <span class="slider-tag" id="social-label" aria-live="polite">Correcte</span>
+          </div>
+          <input type="range" min="0" max="4" step="1" value="2" id="social-slider"
+            aria-label="Niveau de liens sociaux" aria-valuemin="0" aria-valuemax="4" aria-valuenow="2" aria-valuetext="Correcte">
+          <div class="extremes" aria-hidden="true"><span>Isolée</span><span>Bien entourée</span></div>
+        </div>
+
         <div class="message-box" id="message-box" aria-live="polite">Bouge les curseurs pour voir ton message du jour !</div>
 
         <!-- Journal : fait positif -->
@@ -97,16 +118,6 @@
           <textarea id="positive-field" class="journal-field" maxlength="280"
             placeholder="J'ai répondu à ce message difficile, j'ai fait mon lit, j'ai souri à quelqu'un…"></textarea>
           <p class="char-count" id="positive-count">0 / 280</p>
-        </div>
-
-        <!-- Journal : réponse à la question du jour -->
-        <div class="journal-block">
-          <label class="journal-label" for="question-field">
-            <em>Ta réponse</em>
-          </label>
-          <textarea id="question-field" class="journal-field" maxlength="400"
-            placeholder="Écris ce qui te vient, en 2-3 phrases…"></textarea>
-          <p class="char-count" id="question-count">0 / 400</p>
         </div>
 
         <!-- Journal : note libre -->
@@ -194,6 +205,7 @@
               <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--teal)"></div>Intellect</div>
               <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--purple)"></div>Humour</div>
               <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--blue)"></div>Énergie</div>
+              <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--amber)"></div>Liens</div>
             </div>
           </div>
           <canvas id="trend-chart" aria-label="Graphique de tendance hebdomadaire"></canvas>
