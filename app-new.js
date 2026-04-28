@@ -1,4 +1,3 @@
-// Main application with modular architecture
 import { 
   INTELL_LABELS, HUMOR_LABELS, ENERGY_LABELS, MONTHS, DAYS_CAL, CATEGORIES, 
   DAILY_QUESTIONS, ENCOURAGEMENTS, MESSAGES, CONF_COLORS, VALIDATION_RULES, ERROR_MESSAGES 
@@ -26,6 +25,7 @@ function initializeElements() {
     elements.intellSlider = document.getElementById("intell-slider");
     elements.humorSlider = document.getElementById("humor-slider");
     elements.energySlider = document.getElementById("energy-slider");
+    elements.socialSlider = document.getElementById("social-slider");
     elements.msgBox = document.getElementById("message-box");
     elements.saveBtn = document.getElementById("save-btn");
     elements.saveStatus = document.getElementById("save-status");
@@ -175,7 +175,9 @@ async function renderRecap() {
           const cat = CATEGORIES[catKey];
           moodLabel = cat.label;
           dotColor = cat.color;
+          const SOCIAL_LABELS = ["Isolée", "Peu entourée", "Correcte", "Bien entourée", "Liens forts"];
           const energyLabel = data.e !== undefined ? ` · Énergie : ${ENERGY_LABELS[data.e]}` : "";
+          const socialLabel = data.s !== undefined ? ` · Liens : ${SOCIAL_LABELS[data.s]}` : "";
           
           if (data.note) noteText = data.note;
           if (data.positive) {
@@ -187,7 +189,7 @@ async function renderRecap() {
             <div class="recap-day-header">
               <div class="recap-day-dot" style="background:${dotColor}"></div>
               <span class="recap-day-name">${dayName}${isToday ? " (aujourd'hui)" : ""}</span>
-              <span class="recap-day-mood">${moodLabel}${energyLabel}</span>
+              <span class="recap-day-mood">${moodLabel}${energyLabel}${socialLabel}</span>
             </div>
             ${posText ? `<p class="recap-day-note">✓ ${posText}</p>` : ""}
             ${noteText ? `<p class="recap-day-note">${noteText}</p>` : `<p class="recap-day-note empty">Pas de note ce jour-là.</p>`}
@@ -347,8 +349,7 @@ async function init() {
     exportManager.setupEventListeners();
     calendarManager.setupEventListeners();
     gardenManager.setupEventListeners();
-    entriesManager.setupEventListeners();
-
+    
     // Setup tabs
     setupTabs();
     
