@@ -22,11 +22,11 @@ export class GardenManager {
   }
 
   // Génère un encouragement : via IA si disponible, sinon via les phrases codées en dur
-  async _getEncouragement(i, h, e) {
+  async _getEncouragement(i, h, e, s = 2) {
     await this._loadAIService();
     if (this.aiService) {
       try {
-        return await this.aiService.generateEncouragement(i, h, e);
+        return await this.aiService.generateEncouragement(i, h, e, s);
       } catch (err) {
         console.warn('[GardenManager] Erreur IA, basculement sur les phrases locales.', err);
       }
@@ -112,6 +112,7 @@ export class GardenManager {
       
       const todaysCat = todayData ? this.dataUtils.getCategory(todayData.i, todayData.h) : null;
       const todaysEnergy = todayData ? (todayData.e !== undefined ? todayData.e : 2) : null;
+      const todaysSocial = todayData ? (todayData.s !== undefined ? todayData.s : 2) : 2;
       const encouragementBox = document.getElementById('encouragement-box');
 
       // Le bouton apparaît si la catégorie est difficile (red/gray) OU si l'énergie est basse (<= 1)
@@ -133,7 +134,8 @@ export class GardenManager {
             const encouragementText = await this._getEncouragement(
               todayData.i,
               todayData.h,
-              todaysEnergy
+              todaysEnergy,
+              todaysSocial
             );
 
             todayData.encouraged = true;
