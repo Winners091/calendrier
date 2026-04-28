@@ -1,4 +1,3 @@
-// Entries management module
 export class EntriesManager {
   constructor(elements, storage, validator, dataUtils, dateUtils) {
     this.elements = elements;
@@ -25,6 +24,7 @@ export class EntriesManager {
         i: parseInt(this.elements.intellSlider.value) || 2,
         h: parseInt(this.elements.humorSlider.value) || 2,
         e: parseInt(this.elements.energySlider.value) || 2,
+        s: this.elements.socialSlider ? (parseInt(this.elements.socialSlider.value) || 2) : 2,
         positive: this.elements.positiveField.value.trim(),
         qanswer: this.elements.questionField.value.trim(),
         note: this.elements.noteField.value.trim()
@@ -34,6 +34,7 @@ export class EntriesManager {
       if (payload.i < 0 || payload.i > 4) payload.i = 2;
       if (payload.h < 0 || payload.h > 4) payload.h = 2;
       if (payload.e < 0 || payload.e > 4) payload.e = 2;
+      if (payload.s < 0 || payload.s > 4) payload.s = 2;
       
       console.log('Saving entry:', payload);
       
@@ -81,6 +82,9 @@ export class EntriesManager {
           this.elements.intellSlider.value = data.i;
           this.elements.humorSlider.value = data.h;
           this.elements.energySlider.value = data.e;
+          if (this.elements.socialSlider) {
+            this.elements.socialSlider.value = data.s !== undefined ? data.s : 2;
+          }
         }
         
         this.elements.positiveField.value = data.positive || "";
@@ -112,6 +116,9 @@ export class EntriesManager {
         this.elements.intellSlider.value = data.i;
         this.elements.humorSlider.value = data.h;
         this.elements.energySlider.value = data.e || 2;
+        if (this.elements.socialSlider) {
+          this.elements.socialSlider.value = data.s !== undefined ? data.s : 2;
+        }
         
         this.elements.positiveField.value = data.positive || "";
         this.elements.questionField.value = data.qanswer || "";
@@ -217,6 +224,7 @@ export class EntriesManager {
       this.elements.intellSlider.value = 2;
       this.elements.humorSlider.value = 2;
       this.elements.energySlider.value = 2;
+      if (this.elements.socialSlider) this.elements.socialSlider.value = 2;
       
       this.elements.positiveField.value = "";
       this.elements.questionField.value = "";
