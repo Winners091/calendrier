@@ -347,6 +347,7 @@ async function init() {
     uiManager.setupEventListeners();
     themeManager.setupEventListeners();
     exportManager.setupEventListeners();
+    entriesManager.setupEventListeners();
     calendarManager.setupEventListeners();
     gardenManager.setupEventListeners();
     
